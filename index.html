@@ -1,80 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attendance System</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: #f0f4f8;
-  margin: 0;
-}
-
-.card {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-}
-
-/* Logo styles */
-#companyLogo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto 1.5rem auto;
-  border: 2px solid rgba(29,78,216,0.2);
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-}
-
-h1 {
-  margin-bottom: 1.5rem;
-}
-
-input, button {
-  width: 100%;
-  padding: 0.75rem;
-  margin: 0.5rem 0 0.75rem 0;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-button {
-  cursor: pointer;
-  background-color: #2563eb;
-  color: #fff;
-  border: none;
-}
-
-button#checkOut {
-  background-color: #f1f5f9;
-  color: #2563eb;
-  border: 1px solid rgba(37,99,235,0.3);
-}
-
-#status {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-}
-</style>
-</head>
-<body>
 <div class="card">
 <img id="companyLogo" src="https://osaad2177-creator.github.io/Attendance-Zoom/assets/logo.svg" alt="Company Logo">
 <h1>Attendance System</h1>
+
+<!-- Order Name Input -->
+<input type="text" id="orderName" placeholder="Enter Order Name" required>
+
+<!-- Employee Name Input -->
 <input type="text" id="employeeName" placeholder="Enter full name" required>
+
 <button id="checkIn">✅ Check In</button>
 <button id="checkOut">❌ Check Out</button>
 <div id="status"></div>
@@ -84,8 +17,11 @@ button#checkOut {
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwB-MuJHOQNcFnTqd3mo5C0SMXkqbn7o_UB7VGe7_5ICfGuPRrt7LDaqO4Gj8Y7EOgyqg/exec';
 
 async function sendAttendance(type) {
+  const orderName = document.getElementById('orderName').value.trim();
   const name = document.getElementById('employeeName').value.trim();
   const status = document.getElementById('status');
+
+  if (!orderName) { status.innerText = 'Please enter order name'; return; }
   if (!name) { status.innerText = 'Please enter your name'; return; }
 
   if (!navigator.geolocation) { status.innerText = 'Geolocation not supported'; return; }
@@ -98,6 +34,7 @@ async function sendAttendance(type) {
 
     try {
       const url = new URL(APPS_SCRIPT_URL);
+      url.searchParams.set('order_name', orderName); // Add order name
       url.searchParams.set('employee_name', name);
       url.searchParams.set('attendance_type', type);
       url.searchParams.set('latitude', lat);
@@ -121,5 +58,3 @@ async function sendAttendance(type) {
 document.getElementById('checkIn').addEventListener('click', () => sendAttendance('Check In'));
 document.getElementById('checkOut').addEventListener('click', () => sendAttendance('Check Out'));
 </script>
-</body>
-</html>

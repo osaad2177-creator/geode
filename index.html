@@ -6,15 +6,17 @@
 <title>Attendance System</title>
 <style>
 body { font-family: Arial; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f0f4f8; }
-.card { background: #fff; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-h1 { text-align: center; margin-bottom: 1rem; }
+.card { background: #fff; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+h1 { margin-bottom: 1rem; }
 input, button { width: 100%; padding: 0.75rem; margin: 0.5rem 0; border-radius: 10px; border: 1px solid #ccc; font-size: 1rem; }
 button { cursor: pointer; }
 #status { margin-top: 1rem; text-align: center; }
+#logo { width: 100px; height: 100px; object-fit: contain; margin-bottom: 1rem; border-radius: 15px; }
 </style>
 </head>
 <body>
 <div class="card">
+<img id="logo" src="https://osaad2177-creator.github.io/Attendance-Zoom/assets/logo.svg" alt="Company Logo">
 <h1>Attendance System</h1>
 <input type="text" id="employeeName" placeholder="Enter full name" required>
 <input type="text" id="orderName" placeholder="Enter Order Name" required>

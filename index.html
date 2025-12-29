@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Attendance System</title>
+<style>
+  body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;background:#f5f5f5;margin:0;}
+  .card{background:#fff;padding:2rem;border-radius:1rem;box-shadow:0 5px 15px rgba(0,0,0,0.1);width:350px;}
+  h1{text-align:center;}
+  input, button{width:100%;padding:0.75rem;margin:0.5rem 0;border-radius:0.5rem;border:1px solid #ccc;font-size:1rem;}
+  button{cursor:pointer;background:#2563eb;color:#fff;border:none;}
+  button:hover{background:#1e40af;}
+  .message{margin-top:1rem;text-align:center;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Attendance System</h1>
+<input type="text" id="employeeName" placeholder="Enter full name" required />
+<button id="checkIn">✅ Check In</button>
+<button id="checkOut">❌ Check Out</button>
+<div class="message" id="statusMessage">Allow location access to record attendance.</div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbmx-cfEOcBGyl-ILcSJRxN8aEk-5S9JO4UiX9CZWPbFYsNX-s6XoEipCfU-sw5Mu_3w/exec";
+const statusMessage = document.getElementById("statusMessage");
+const employeeNameInput = document.getElementById("employeeName");
+
+async function recordAttendance(type){
+  const name = employeeNameInput.value.trim();
+  if(!name){statusMessage.textContent="Please enter your name"; return;}
+  if(!navigator.geolocation){statusMessage.textContent="Geolocation not supported"; return;}
+
+  statusMessage.textContent="Fetching location...";
+  navigator.geolocation.getCurrentPosition(async (pos)=>{
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    const url = new URL(APPS_SCRIPT_URL);
+    url.searchParams.set("employee_name", name);
+    url.searchParams.set("attendance_type", type);
+    url.searchParams.set("latitude", lat);
+    url.searchParams.set("longitude", lng);
+
+    try{
+      const res = await fetch(url);
+      const text = await res.text();
+      statusMessage.textContent = text;
+    }catch(e){
+      statusMessage.textContent="Network error. Try again.";
+    }
+  }, ()=>{statusMessage.textContent="Location permission denied.";},{enableHighAccuracy:true});
+}
+
+document.getElementById("checkIn").addEventListener("click",()=>recordAttendance("Check In"));
+document.getElementById("checkOut").addEventListener("click",()=>recordAttendance("Check Out"));
+</script>
+</body>
+</html>
